@@ -1,15 +1,16 @@
 \section{Conclusions}
 \label{sec:conclusion}
 
-We formally define the uncertainty problem in validating
-wireless protocol implementations using sniffers. We describe a systematic augmentation of the
+We formally define the uncertainty problem in validating wireless protocol
+implementations using sniffers. We describe a systematic augmentation of the
 protocol state machine to explicitly encode the uncertainty of sniffer traces.
-We characterize the NP-completeness of the problem and propose both an exhaustive
-search algorithm and heuristics to restrict the search to more likely 
+We characterize the NP-completeness of the problem and propose both an
+exhaustive search algorithm and heuristics to restrict the search to more likely
 traces. We present two case studies using \ns{} network simulator to demonstrate
-how our framework can improve validation precision and detect real bugs.
+how our framework can improve validation precision and detect real bugs. We also
+report the application of our framework on a commercial product under
+development.
 
-\begin{comment}
 Finally, we discuss a few challenges and future
 directions.
 
@@ -17,9 +18,9 @@ directions.
 that not all the states in the state machine are visited during the verification
 process. For instance, a rate control state machine based on certain consecutive
 packet losses patterns can not be verified if no such consecutive losses appear
-in the sniffer trace. In general, given a protocol state machine, how to extract
-the packet patterns for each state to be reached and how to alter the testing
-such that such patterns can be observed?
+in the sniffer trace. In general, given a protocol state machine, it is
+challenging to extract the packet patterns for each state to be reached and to
+alter the testing such that such patterns can be observed.
 
 \textbf{State Machine Generation.} We manually translated the protocols studied
 in this paper into monitor state machines based on the source code, comments and
@@ -27,5 +28,3 @@ documentation. The process is time-consuming and error-prone. A more scalable
 approach would be taking the protocol specification written in certain formal
 language, and automatically translate such specification into state machines
 that can be used for verification process.
-
-\end{comment}
