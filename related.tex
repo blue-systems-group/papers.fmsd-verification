@@ -1,0 +1,67 @@
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Hidden Markov Model (HMM) Approach.} When considering the whole system
+under test (both DUT and endpoint), the sniffer only captures a subset of the
+all the packets (events).  This is similar to the event sampling problem in
+runtime
+verification~\cite{bonakdarpour2011sampling,hauswirth2004low,arnold2008qvm,fei2006artemis,basin2012monitoring}.
+Stoller \textit{et al}~\cite{stoller2011runtime} used HMM-based state estimation
+techniques to calculate the confidence that the temporal property is satisfied
+in the presence of gaps in observation.
+
+While it seems possible to adapt the
+method in~\cite{stoller2011runtime} to our problem, we note several advantages
+of our approach. First, the
+automatically augmented state machine precisely encodes the protocol
+specification and the uncertainty. This is intuitive to design and natural for
+reporting the evidence for a trace being successful. We do not require a user
+to specify the number of states of the underlying HMM, or accurately provide
+underlying probabilities. Second, we use timed automata to monitor the timing
+constraints which are common in wireless protocols. It may be non-trivial to
+encode such timing information in HMM. Finally, we can exploit domain knowledge
+to devise effective pruning heuristics to rule out unlikely sequences during the
+exhaustive search. 
+
+\textbf{Network Protocol Validation.} Lee \textit{et al}~\cite{lee1997passive}
+studied the problem of passive network testing of network management. The system
+input/output behavior is only partially observable. However, the uncertainty
+only lies in missing events in the observation, while in the context of wireless
+protocol verification, the uncertainty could also be caused by extra events not
+observed by the tested system. Additionally, they do not provide any formal
+guarantees even for cases when we report a definite bug.  Software model
+checking techniques~\cite{musuvathi2002cmc,godefroid1997model} have also been
+used to verify network protocols. Our problem is unique because of the
+observation uncertainty caused by sniffers. Our framework shares similarity
+with {\it angelic verification}~\cite{das-cav15} where the program verifier
+reports a warning only when no acceptable specification exists on unknowns.
+
+\begin{comment}
+\textbf{Sniffer Trace Analysis.} Wireless sniffers has been widely used to
+analyze MAC layer behaviors of enterprise wireless
+networks~\cite{sheng:wicom2008,tan:tmc2014,yeo-wise04,yeo:witmemo2005}.
+Jigsaw~\cite{Cheng:2006:JSP:1159913.1159920} is a larger scale wireless network
+monitoring infrastructure. 150~radio monitors were deployed in a campus
+building. Traces collected from multiple sniffers were merged and synchronized
+to restructure the link and transportation layer conversations. Protocol
+specific heuristics were developed to infer the missing packets. The work
+in~\cite{Mahajan:2006:AMB:1159913.1159923} shared the same idea of trace merging
+with Jigsaw, but uses a FSM to infer packet reception. These works assume the
+correctness of the protocol implementation in order to infer missing packets,
+while we systematically encode the uncertainty of sniffer traces for
+verification purpose.
+
+
+\textbf{ Testing Under Uncertainty}. The position paper by Rosemblum \textit{et
+al}~\cite{Elbaum:2014:KUT:2635868.2666608} contains excellent motivation for the
+need to combat uncertainty foundationally when testing systems. McKinley
+\textit{et al}~\cite{bornholt2014uncertain,sampson2014expressing} deals with checking
+assertions in programs dealing with noisy data from sensors. Instead of checking
+the truth or falsity of assertions, they model the probability distribution of
+the assertion conditions and perform Monte-carlo based simulations to estimate
+the probabilities. Our work can be seen as leveraging non-determinism to weaken
+the specification logically to precisely define the problem complexity, and use
+probabilities to guide the search for likely mutations.  Other works have used
+sampling to find data-race bugs~\cite{marino2009literace}, and ensure that the
+sampling does not lead to spurious alarms.
+\end{comment}

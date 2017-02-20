@@ -1,5 +1,59 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
+\input{./include/start.tex}
+
+\def\thetitle{Wireless Protocol Validation Under Uncertainty}
+\def\theauthors{}
+
+\authorrunning{J. Shi, S. K. Lahiri, R. Chandra, G. Challen}
+
+\journalname{Formal Methods in System Design}
+
 \begin{document}
-(Type your content here.)
+
+\title{%
+\thetitle\\
+}
+
+\author{%
+  Jinghao Shi$^1$ \and
+  Shuvendu K. Lahiri$^2$ \and
+  Ranveer Chandra$^2$ \and
+  Geoffrey Challen$^1$
+}
+
+\institute{
+  $^1$\email{\{jinghaos, challen\}@buffalo.edu}\\
+  University at Buffalo, Buffalo, NY 14120, USA\\
+  $^2$\email{\{shuvendu, ranveer\}@microsoft.com}\\
+  Microsoft Research, Redmond, WA 98052, USA
+}
+
+\hypersetup{%
+  pdfinfo={%
+    Title={\thetitle},
+    Author={\theauthors},
+  }
+}
+
+
+\maketitle
+
+\input{abstract.tex}
+\input{introduction.tex}
+\input{motivation.tex}
+\input{background.tex}
+\input{framework.tex}
+\input{case.tex}
+\input{related.tex}
+\input{conclusion.tex}
+
+
+
+{\footnotesize
+  \bibliographystyle{abbrv}
+  \bibliography{references}
+}
+
+%\newpage
+%\input{appendix.tex}
+
 \end{document}
