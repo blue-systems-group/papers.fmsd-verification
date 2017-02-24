@@ -123,7 +123,7 @@ such packets in the mutation trace.
 Consider the 802.11 data transmission protocol and the example trace snippet
 shown in Figure~\ref{fig:loss}, the packet loss ratios are:
 \begin{align*}
-  Pr_{ds} &= \frac{\parallel\{DATA'_0\}\parallel}{\parallel\{DATA_0, DATA'_0\}\parallel} = 0.5\\
+  Pr_{ds} &= \frac{\parallel\{\it{DATA}'_0\}\parallel}{\parallel\{\it{DATA}_0, \it{DATA}'_0\}\parallel} = 0.5\\
   Pr_{es} &= \frac{\parallel\emptyset\parallel}{\parallel\{Ack, Ack\}\parallel} = 0\\
   Pr_{ed} &= \frac{\parallel\{Ack\}\parallel}{\parallel\{Ack, Ack\}\parallel\times (1-Pr_{es})} = 0.5
 \end{align*}

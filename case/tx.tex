@@ -75,7 +75,7 @@ of the $(time, packet)$ pair for set intersection and union operation.  However,
 it does not work for mutation trace which contains fabricated packets with no
 actual payload.  Therefore, we use a protocol specific canonical representation
 of packets when calculating the distance.  In particular, the string
-\texttt{r\_DATA\_i\_t} represents the $t^{th}$ transmission of a data packet
+\texttt{r\_\it{DATA}\_i\_t} represents the $t^{th}$ transmission of a data packet
 with sequence number $i$, and $r$ represents the round of sequence numbers as it
 wraps after 4096.  And similarly \texttt{r\_Ack\_i\_t} is the corresponding
 acknowledgment packet.

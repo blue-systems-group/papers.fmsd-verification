@@ -95,9 +95,9 @@ retransmits the packet at most once if the first transmission failed.
 %
 The state machine can be easily adapted to accommodate multiple retransmissions.
 
-There are only three types of packets to consider in this case: $DATA_i$ denotes
-a packet sent by the transmitter with sequence number $i$, $DATA'_i$ denotes the
-retransmission of $DATA_i$, and $Ack$ is the acknowledgment packet sent by the
+There are only three types of packets to consider in this case: $\it{DATA}_i$ denotes
+a packet sent by the transmitter with sequence number $i$, $\it{DATA}'_i$ denotes the
+retransmission of $\it{DATA}_i$, and $Ack$ is the acknowledgment packet sent by the
 receiver.
 %
 The sequence number is within the range of $[0, N)$.
@@ -107,7 +107,7 @@ The monitor state machine is illustrated in Fig.~\ref{fig:dot11_tx_ta}, and
 the main components are:
 
 \begin{itemize}
-  \item $\Sigma = \{DATA_i, DATA'_i, Ack\ |\ 0 \le i < N\}$.
+  \item $\Sigma = \{\it{DATA}_i, \it{DATA}'_i, Ack\ |\ 0 \le i < N\}$.
     %
   \item Clock variables $C = \{c\}$. The only clock variable $c$ is
     used for acknowledgment time out.
@@ -134,12 +134,12 @@ Therefore, this state machine is consistent with Definition~\ref{def:sm}.
 The sequence number $i$ is initialized to 0 when the state machine is
 initialized.
 %
-At state $s_0$, the monitor expects to see a $DATA_i$ packet.
+At state $s_0$, the monitor expects to see a $\it{DATA}_i$ packet.
 %
 It transits to $s_1$ when such event happens and resets acknowledgment timer $c$ along the transition.
 %
 At state $s_1$, two valid events can happen: either the DUT receives $Ack$ packet
-within time $T_o$ ($s_1\rightarrow s_0$), or the DUT sends $DATA'_i$ after $T_o$
+within time $T_o$ ($s_1\rightarrow s_0$), or the DUT sends $\it{DATA}'_i$ after $T_o$
 but before $T_m$ ($s_1 \rightarrow s_2$).
 %
 Similarly at state $s_2$, either the DUT receives $Ack$ within time $T_o$ ($s_2
