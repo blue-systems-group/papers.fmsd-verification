@@ -22,9 +22,9 @@ in the sniffer trace. In general, given a protocol state machine, it is
 challenging to extract the packet patterns for each state to be reached and to
 alter the testing such that such patterns can be observed.
 
-\textbf{State Machine Generation.} We manually translated the protocols studied
-in this paper into monitor state machines based on the source code, comments and
-documentation. The process is time-consuming and error-prone. A more scalable
-approach would be taking the protocol specification written in certain formal
-language, and automatically translate such specification into state machines
-that can be used for verification process.
+\textbf{Automated State Machine Construction.} We manually constructed the
+protocol monitor state machines for the protocols studied in this paper based on
+the source code, comments and documentation. The process involves lots of labor
+effort and is time-consuming. A potential alternative is to automatically learn
+the sketch of the monitor state machines from the sniffer traces. Domain
+knowledge can then be leveraged to improve the sketch state machines.

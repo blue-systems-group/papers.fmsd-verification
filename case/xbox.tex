@@ -13,7 +13,7 @@
     Downlink Modulation & 3127 & 24 (0.77\%) \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Validation Results on Traces from the Gaming Wireless Protocol}}
+  \caption{\textbf{Validation Results on Traces from the Gaming Wireless Protocol.}}
   \label{tab:xbox}
 \end{table}
 
@@ -32,20 +32,23 @@ We split the traces into \num{100000} packet segments, and applied our framework
 to validate the DUT implementation. We found that the latest implementation of
 the protocol under development had violations of the protocol specification.
 Some of the implementation bugs we found related to the sequence number
-management, station scheduling, and the changing of modulation rates adaptation.
+management, station scheduling during power saving mode, and modulation rates
+adaptation.
+
 Table~\ref{tab:xbox} summarizes the validation result. Note that if we disable
 the augmented transitions, each trace will be flagged as violation because of
-the missing packets, thereby reducing the usability of the tool.
-
-The bugs related to packet sequence number and station scheduler were detected
-in about half the traces, and the bug related to the rate control algorithm was
-detected in only a few traces. This is because the previous two aspects are
-essential in all protocol operations, while the bugs related to rate control
-only manifest themselves under certain link conditions.
+the missing packets, thereby reducing the usability of the tool. We also note
+that some bugs manifest more often than others. For instance, the bugs related
+to packet sequence number and station scheduler were detected in about half the
+traces, and the bug related to the rate control algorithm was detected in only a
+few traces. This is because the previous two aspects are essential in all
+protocol operations, while the bugs related to rate control only manifest
+themselves under certain link conditions.
 
 After communicating with the testing team, we confirmed that the sequence number
 bug was already known, as it is relatively easy to detect even by manually
 examining the traces. The bug related to station scheduling was also noticed
 before, yet no quantitative results about how frequent this bug appears were
 obtained because of the lack of automatized validating tools. Finally, the bug
-related to rate control has been filed as a bug report.
+related to rate control has been filed as a bug report. All reported bugs were
+fixed before the next release the product.
