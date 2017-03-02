@@ -3,6 +3,7 @@ OUTDIR=out
 MODE=errorstopmode
 OKWORDS=okwords.txt
 BADWORDS=badwords.txt
+FIG_DIR=./figures
 
 pdf:
 	pdflatex --output-directory $(OUTDIR) $(MAIN).tex
@@ -20,6 +21,11 @@ spellcheck:
 	@test -e $(OKWORDS) || touch $(OKWORDS)
 	@find . -type f -name "*.tex" -exec hunspell -t -l -p $(OKWORDS) {} \; | sort -f | uniq > $(BADWORDS)
 	@cat $(BADWORDS)
+
+submit: clean pdf
+	@latexpand --expand-bbl $(OUTDIR)/$(MAIN).bbl $(MAIN).tex -o submitted/all-in-one.tex
+	@$(foreach fig, $(shell grep "includegraphics" submitted/all-in-one.tex  | cut -d \{ -f 2 | cut -d \} -f 1), /bin/cp -rfv $(FIG_DIR)/$(fig) submitted/;)
+
 
 .PHONY: clean
 clean:
