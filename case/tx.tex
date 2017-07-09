@@ -15,6 +15,28 @@ respectively. Another \wifi{} device is configured in monitor mode and acts as
 the sniffer. During the experiments,we collect both the DUT packet trace
 (the ground truth) and the sniffer trace.
 
+The DUT and endpoint are configured to use the IEEE 802.11g standard with both
+RTS/CTS and fragmentation disabled.  A Constant Bit Rate (CBR) UDP traffic
+(54~Mbps) is generated from the DUT to the endpoint.  The UDP packet size is
+1436 bytes, which results in a 1500 bytes \wifi{} packet.
+
+In order to control the packet loss ratios between each pair of devices, we
+developed a new propagation loss model for \ns{} called
+\texttt{MatrixRandomPropagationLossModel}.
+\sloppy{%
+  Instead of a constant propagation
+  loss as in existing \texttt{MatrixPropagationLossModel}, the signal
+  propagation loss between a pair of nodes is determined by a binary random
+  variable of two  values: 0~dB (no loss) and 1000~dB (complete loss).
+  }
+Therefore, any packet loss
+probability can be achieved by adjusting the random variable distribution.
+The
+model supports both symmetric and asymmetric propagation losses.
+We use
+symmetric propagation loss in all our experiments.
+Finally, pcap capture is enabled in both the DUT and the sniffer devices.
+
 \subsubsection{Verifying Unmodified Implementation}
 
 In the original monitor state machine shown in Fig.~\ref{fig:dot11_tx_ta}, we
@@ -59,7 +81,7 @@ For all following analysis, we divide the traces into three groups according to
 $Pr_{ed}$: low ($0 \le Pr_{ed} \le 0.15$), medium ($0.20 \le Pr_{ed} \le 0.35$)
 and high ($0.40 \le Pr_{ed} \le 0.50$).
 
-The different between two packet traces can be quantified by the Jaccard distance
+The difference between two packet traces can be quantified by the Jaccard distance
 metric.
 
 \begin{align}
@@ -75,9 +97,9 @@ of the $(time, packet)$ pair for set intersection and union operation.  However,
 it does not work for mutation trace which contains fabricated packets with no
 actual payload.  Therefore, we use a protocol specific canonical representation
 of packets when calculating the distance.  In particular, the string
-\texttt{r\_\it{DATA}\_i\_t} represents the $t^{th}$ transmission of a data packet
+\textit{r\_DATA\_i\_t} represents the $t^{th}$ transmission of a data packet
 with sequence number $i$, and $r$ represents the round of sequence numbers as it
-wraps after 4096.  And similarly \texttt{r\_Ack\_i\_t} is the corresponding
+wraps after 4096.  And similarly \textit{r\_ACK\_i\_t} is the corresponding
 acknowledgment packet.
 
 \begin{figure*}[t!]
@@ -128,7 +150,7 @@ the Average Search Steps Per Packet (ASSPP) as a metric to quantify the search
 cost.  It is calculated by dividing the total number of search steps by the
 number of packets in the packet trace. For DUT traces, ASSPP is always 1 since
 there is no uncertainty. For sniffer traces, however, multiple search steps must
-be to conducted to resolve the potential uncertainty of each packet in the
+be conducted to resolve the potential uncertainty of each packet in the
 sniffer trace.
 
 \begin{figure*}[t!]

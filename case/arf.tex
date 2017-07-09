@@ -1,6 +1,11 @@
 \subsection{ARF Rate Control Algorithm}
 \label{subsec:arf}
 
+We report a bug found in NS-3 ARF~\cite{kamerman1997wavelan} implementation
+which causes the sender to get stuck at a lower rate even after enough number of
+consecutive successes. The bug was detected using sniffer traces and
+confirmed by both the DUT trace and source code inspection.
+
 Automatic Rate Fallback (ARF)~\cite{kamerman1997wavelan} is the first rate
 control algorithm in literature. In ARF, the sender increases the bit rate after
 $Th_1$ number of consecutive successes or $Th_2$ number of packets with at most
@@ -71,7 +76,4 @@ value of \texttt{count} is $Th_2-1$ and the next packet succeed after one
 retransmission, the value of \texttt{count} will be $Th_2+1$, which would fail
 the implementation's test of \texttt{count == Th\_2}.
 
-We report a bug found in NS-3 ARF~\cite{kamerman1997wavelan} implementation
-which causes the sender to get stuck at a lower rate even after enough number of
-consecutive successes. The bug was detected using sniffer traces and
-confirmed by both the DUT trace and source code inspection.
+

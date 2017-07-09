@@ -74,12 +74,8 @@ more details about timed automata.
 \end{definition}
 
 A tuple $(t_i, p_i)$ in the packet trace means the packet $p_i$ is presented to
-the state machine at time $t_i$. The monitor {\it rejects a trace} $Tr$ if there
-exists a prefix of $Tr$ such that all states reachable after consuming the
-prefix have no valid transitions for the next $(t, p)$ input.
-
-As an example, the monitor state machine illustrated in
-Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
+the state machine at time $t_i$.  As an example, the monitor state machine
+illustrated in Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
 
 \begin{itemize}
   \item $\Sigma = \{\it{DATA}_i, \it{DATA}'_i, Ack\ |\ 0 \le i < N\}$.
@@ -90,9 +86,17 @@ Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
   \item Guard constraints $G = \{ c \le T_o, c > T_o, T_o < c \le T_m\}$.
     $T_o$ is the acknowledgment time out value, and $T_m >
     T_o$ is the maximum delay allowed before the retransmission packet gets
-    sent. $T_o$ can be arbitrary large but not infinity in order to check the
-    liveness of the DUT.
+    sent. In this particular case, $T_o$ can be arbitrary large but not infinity
+        in order to check the liveness of the DUT.
 \end{itemize}
+
+
+\begin{definition}[Trace Rejection and Acceptance]
+    A monitor state machine $S$ {\it rejects a trace} $Tr$ if there
+    exists a prefix of $Tr$ such that all states reachable after consuming the
+    prefix have no valid transitions for the next $(t, p)$ input. Otherwise, $S$
+    {\it accepts} $Tr$ (or $Tr$ {\it satisfies} $S$).
+\end{definition}
 
 
 The monitor state machine defines a \textit{timed language} $L$ which consists

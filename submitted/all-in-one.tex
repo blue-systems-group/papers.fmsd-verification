@@ -202,7 +202,7 @@ validated, we describe a systematic transformation that adds non-deterministic
 transitions to incorporate uncertainty introduced by the sniffer. This
 augmented validation state machine implicitly defines a set of
 mutated traces, each satisfying the original state machine with a specific
-likelihood. If the set is empty, the implementation definitely violates the
+likelihood. If the set of mutated traces is empty, the implementation definitely violates the
 protocol. Searching over all the mutated traces is NP-complete, but the approach
 can be made practical by applying protocol-oblivious heuristics that limit the
 search to likely mutated traces.
@@ -391,12 +391,8 @@ more details about timed automata.
 \end{definition}
 
 A tuple $(t_i, p_i)$ in the packet trace means the packet $p_i$ is presented to
-the state machine at time $t_i$. The monitor {\it rejects a trace} $Tr$ if there
-exists a prefix of $Tr$ such that all states reachable after consuming the
-prefix have no valid transitions for the next $(t, p)$ input.
-
-As an example, the monitor state machine illustrated in
-Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
+the state machine at time $t_i$.  As an example, the monitor state machine
+illustrated in Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
 
 \begin{itemize}
   \item $\Sigma = \{\it{DATA}_i, \it{DATA}'_i, Ack\ |\ 0 \le i < N\}$.
@@ -407,9 +403,17 @@ Fig.~\ref{fig:dot11_tx_ta} can be formally defined as follows:
   \item Guard constraints $G = \{ c \le T_o, c > T_o, T_o < c \le T_m\}$.
     $T_o$ is the acknowledgment time out value, and $T_m >
     T_o$ is the maximum delay allowed before the retransmission packet gets
-    sent. $T_o$ can be arbitrary large but not infinity in order to check the
-    liveness of the DUT.
+    sent. In this particular case, $T_o$ can be arbitrary large but not infinity
+        in order to check the liveness of the DUT.
 \end{itemize}
+
+
+\begin{definition}[Trace Rejection and Acceptance]
+    A monitor state machine $S$ {\it rejects a trace} $Tr$ if there
+    exists a prefix of $Tr$ such that all states reachable after consuming the
+    prefix have no valid transitions for the next $(t, p)$ input. Otherwise, $S$
+    {\it accepts} $Tr$ (or $Tr$ {\it satisfies} $S$).
+\end{definition}
 
 
 The monitor state machine defines a \textit{timed language} $L$ which consists
@@ -597,7 +601,7 @@ non-deterministically infer packets missed by the sniffer, and use Type-2
 transitions to consume extra packets captured by the sniffer but missed by the
 DUT.
 
-A accepting run of $S^+$ on sniffer trace $Tr$ yields a mutation trace $Tr'$
+An accepting run of $S^+$ on sniffer trace $Tr$ yields a mutation trace $Tr'$
 which represents one possibility of the DUT trace. Specifically, $Tr'$ can be
 obtained by adding missing packets indicated by Type-1 transitions to $Tr$, and
 removing extra packets indicated by Type-2 transitions from $Tr$
@@ -606,6 +610,8 @@ We show that the VALIDATION problem is equivalent to the
 satisfiability problem of $Tr$ on $S^+$.
 
 \begin{theorem}
+    Let $Tr$ be a sniffer trace, $\mathcal{M}(Tr)$ be $Tr$'s mutation traces, $S$
+    and $S^+$ be the original and augmented monitor state machine respectively.
   There exists a mutation trace $Tr' \in \mathcal{M}(Tr)$ that satisfies $S$ if
   and only if $Tr$ satisfies $S^+$.
  \label{the:equivalent}
@@ -627,10 +633,10 @@ satisfiability problem of $Tr$ on $S^+$.
   It is obvious that $Tr'$ is a mutation trace of $Tr$, since only receiving
   packets are removed in the process.
 
-  Now we show that there exists a accepting transition sequence $P'$ of $S^+$ on
+  Now we show that there exists an accepting transition sequence $P'$ of $S^+$ on
   input $Tr'$ that does not contain augmented transitions.  In particular, $P'$
   can be obtained by substituting all Type-1 transitions with corresponding
-  original transitions, and removing all Type-2 transition.  Since $P'$ does not
+  original transitions, and removing all Type-2 transitions.  Since $P'$ does not
   contain augmented transitions, it is also an accepting transition sequence of
   $S$ on input $Tr'$, hence $Tr'$ satisfies $S$.
 
@@ -639,7 +645,7 @@ satisfiability problem of $Tr$ on $S^+$.
   We first note that $P'$ is also the accepting transitions of $S^+$ on input
   $Tr'$, since $E \subset E^+$.
 
-  We construct a accepting transition sequence $P$ of $S^+$ on input $Tr$ as
+  We construct an accepting transition sequence $P$ of $S^+$ on input $Tr$ as
   follows.
   \begin{itemize}
     \item For each packet $p \in Tr' \setminus Tr$, substitute the transition
@@ -890,7 +896,8 @@ transitions (line~\ref{alg:search:order}).
 This ensures the first found mutation trace will have the most number of Type-0
 transitions among all possible mutation traces.
 Intuitively, this means the search algorithm tries to utilize the sniffer's
-observation as much as possible before being forced to make assumptions.
+observation as much as possible before considering the packet loss by the
+sniffer or DUT.
 
 
 Each of the extend functions either returns the mutation trace $Tr'$, or
@@ -1108,6 +1115,27 @@ respectively. Another \wifi{} device is configured in monitor mode and acts as
 the sniffer. During the experiments,we collect both the DUT packet trace
 (the ground truth) and the sniffer trace.
 
+The DUT and endpoint are configured to use the IEEE 802.11g standard with both
+RTS/CTS and fragmentation disabled.  A Constant Bit Rate (CBR) UDP traffic
+(54~Mbps) is generated from the DUT to the endpoint.  The UDP packet size is
+1436 bytes, which results in a 1500 bytes \wifi{} packet.
+
+In order to control the packet loss ratios between each pair of devices, we
+developed a new propagation loss model for \ns{} called
+\texttt{MatrixRandomPropagationLossModel}.
+\sloppy{  Instead of a constant propagation
+  loss as in existing \texttt{MatrixPropagationLossModel}, the signal
+  propagation loss between a pair of nodes is determined by a binary random
+  variable of two  values: 0~dB (no loss) and 1000~dB (complete loss).
+  }
+Therefore, any packet loss
+probability can be achieved by adjusting the random variable distribution.
+The
+model supports both symmetric and asymmetric propagation losses.
+We use
+symmetric propagation loss in all our experiments.
+Finally, pcap capture is enabled in both the DUT and the sniffer devices.
+
 \subsubsection{Verifying Unmodified Implementation}
 
 In the original monitor state machine shown in Fig.~\ref{fig:dot11_tx_ta}, we
@@ -1152,7 +1180,7 @@ For all following analysis, we divide the traces into three groups according to
 $Pr_{ed}$: low ($0 \le Pr_{ed} \le 0.15$), medium ($0.20 \le Pr_{ed} \le 0.35$)
 and high ($0.40 \le Pr_{ed} \le 0.50$).
 
-The different between two packet traces can be quantified by the Jaccard distance
+The difference between two packet traces can be quantified by the Jaccard distance
 metric.
 
 \begin{align}
@@ -1167,9 +1195,9 @@ of the $(time, packet)$ pair for set intersection and union operation.  However,
 it does not work for mutation trace which contains fabricated packets with no
 actual payload.  Therefore, we use a protocol specific canonical representation
 of packets when calculating the distance.  In particular, the string
-\texttt{r\_\it{DATA}\_i\_t} represents the $t^{th}$ transmission of a data packet
+\textit{r\_DATA\_i\_t} represents the $t^{th}$ transmission of a data packet
 with sequence number $i$, and $r$ represents the round of sequence numbers as it
-wraps after 4096.  And similarly \texttt{r\_Ack\_i\_t} is the corresponding
+wraps after 4096.  And similarly \textit{r\_ACK\_i\_t} is the corresponding
 acknowledgment packet.
 
 \begin{figure*}[t!]
@@ -1219,7 +1247,7 @@ the Average Search Steps Per Packet (ASSPP) as a metric to quantify the search
 cost.  It is calculated by dividing the total number of search steps by the
 number of packets in the packet trace. For DUT traces, ASSPP is always 1 since
 there is no uncertainty. For sniffer traces, however, multiple search steps must
-be to conducted to resolve the potential uncertainty of each packet in the
+be conducted to resolve the potential uncertainty of each packet in the
 sniffer trace.
 
 \begin{figure*}[t!]
@@ -1316,6 +1344,11 @@ violations.
 \makeatletter{}\subsection{ARF Rate Control Algorithm}
 \label{subsec:arf}
 
+We report a bug found in NS-3 ARF~\cite{kamerman1997wavelan} implementation
+which causes the sender to get stuck at a lower rate even after enough number of
+consecutive successes. The bug was detected using sniffer traces and
+confirmed by both the DUT trace and source code inspection.
+
 Automatic Rate Fallback (ARF)~\cite{kamerman1997wavelan} is the first rate
 control algorithm in literature. In ARF, the sender increases the bit rate after
 $Th_1$ number of consecutive successes or $Th_2$ number of packets with at most
@@ -1385,10 +1418,7 @@ value of \texttt{count} is $Th_2-1$ and the next packet succeed after one
 retransmission, the value of \texttt{count} will be $Th_2+1$, which would fail
 the implementation's test of \texttt{count == Th\_2}.
 
-We report a bug found in NS-3 ARF~\cite{kamerman1997wavelan} implementation
-which causes the sender to get stuck at a lower rate even after enough number of
-consecutive successes. The bug was detected using sniffer traces and
-confirmed by both the DUT trace and source code inspection.
+
  
 \makeatletter{}\subsection{Industrial Application}
 \label{subsec:xbox}
@@ -1405,7 +1435,7 @@ confirmed by both the DUT trace and source code inspection.
     Downlink Modulation & 3127 & 24 (0.77\%) \\
     \bottomrule
   \end{tabular}
-  \caption{\textbf{Validation Results on Traces from the Gaming Wireless Protocol.}}
+  \caption{\textbf{Validation Results on Traces from the Gaming Controller Wireless Protocol.}}
   \label{tab:xbox}
 \end{table}
 
@@ -1420,14 +1450,18 @@ protocol that is under development and testing. This team has been testing the
 implementation for a few weeks.  Each trace contained around 6 million packets
 that were captured during 1 hour and 40 minutes of protocol operation.
 
-We split the traces into \num{100000} packet segments, and applied our framework
-to validate the DUT implementation. We found that the latest implementation of
-the protocol under development had violations of the protocol specification.
-Some of the implementation bugs we found related to the sequence number
-management, station scheduling during power saving mode, and modulation rates
-adaptation.
+We first split the traces into \num{100000} packet segments, which yields \num{3127}
+traces for testing.  We then applied our framework on the traces to validate the
+DUT implementation. We found that the latest implementation of the protocol
+under development had violations of the protocol specification.  Some of the
+implementation bugs we found related to the sequence number management, station
+scheduling during power saving mode, and modulation rates adaptation.
+Table~\ref{tab:xbox} summarizes the validation results. The \textbf{Traces}
+column shows the number of traces that we have successfully validated for each
+category, and the third column shows the fraction of traces that contain at
+least one violation in that category.
 
-Table~\ref{tab:xbox} summarizes the validation result. Note that if we disable
+Note that if we disable
 the augmented transitions, each trace will be flagged as violation because of
 the missing packets, thereby reducing the usability of the tool. We also note
 that some bugs manifest more often than others. For instance, the bugs related
@@ -1442,8 +1476,8 @@ bug was already known, as it is relatively easy to detect even by manually
 examining the traces. The bug related to station scheduling was also noticed
 before, yet no quantitative results about how frequent this bug appears were
 obtained because of the lack of automatized validating tools. Finally, the bug
-related to rate control has been filed as a bug report. All reported bugs were
-fixed before the next release the product.
+related to rate control, which was unknown previously, has been filed as a bug
+report. All reported bugs were fixed before the next release the product.
  
  
 \makeatletter{}\section{Related Work}
@@ -1498,6 +1532,7 @@ with Jigsaw, but uses a FSM to infer packet reception. These works assume the
 correctness of the protocol implementation in order to infer missing packets,
 while we systematically encode the uncertainty of sniffer traces for
 verification purpose.
+\end{comment}
 
 
 \textbf{ Testing Under Uncertainty}. The position paper by Rosemblum \textit{et
@@ -1512,12 +1547,11 @@ the specification logically to precisely define the problem complexity, and use
 probabilities to guide the search for likely mutations.  Other works have used
 sampling to find data-race bugs~\cite{marino2009literace}, and ensure that the
 sampling does not lead to spurious alarms.
-\end{comment}
  
 \makeatletter{}\section{Conclusions}
 \label{sec:conclusion}
 
-We formally define the uncertainty problem in validating wireless protocol
+We formally define an instance of the uncertainty problem in validating wireless protocol
 implementations using sniffers. We describe a systematic augmentation of the
 protocol state machine to explicitly encode the uncertainty of sniffer traces.
 We characterize the NP-completeness of the problem and propose both an
@@ -1580,6 +1614,11 @@ B.~Bonakdarpour, S.~Navabpour, and S.~Fischmeister.
 \newblock Sampling-based runtime verification.
 \newblock In {\em FM 2011: Formal Methods}, pages 88--102. Springer, 2011.
 
+\bibitem{bornholt2014uncertain}
+J.~Bornholt, T.~Mytkowicz, and K.~S. McKinley.
+\newblock Uncertain< t>: A first-order type for uncertain data.
+\newblock {\em ACM SIGARCH Computer Architecture News}, 42(1):51--66, 2014.
+
 \bibitem{cheng2006jigsaw}
 Y.-C. Cheng, J.~Bellardo, P.~Benk{\"o}, A.~C. Snoeren, G.~M. Voelker, and
   S.~Savage.
@@ -1610,6 +1649,13 @@ S.~Edelkamp, V.~Schuppan, D.~Bo{\v{s}}na{\v{c}}ki, A.~Wijs, A.~Fehnker, and
 \newblock Survey on directed model checking.
 \newblock In {\em International Workshop on Model Checking and Artificial
   Intelligence}, pages 65--89. Springer, 2008.
+
+\bibitem{Elbaum:2014:KUT:2635868.2666608}
+S.~Elbaum and D.~S. Rosenblum.
+\newblock Known unknowns: Testing in the presence of uncertainty.
+\newblock In {\em Proceedings of the 22Nd ACM SIGSOFT International Symposium
+  on Foundations of Software Engineering}, FSE 2014, pages 833--836, New York,
+  NY, USA, 2014. ACM.
 
 \bibitem{fei2006artemis}
 L.~Fei and S.~P. Midkiff.
@@ -1669,6 +1715,11 @@ R.~Mahajan, M.~Rodrig, D.~Wetherall, and J.~Zahorjan.
 \newblock In {\em ACM SIGCOMM Computer Communication Review}, volume~36, pages
   75--86. ACM, 2006.
 
+\bibitem{marino2009literace}
+D.~Marino, M.~Musuvathi, and S.~Narayanasamy.
+\newblock Literace: effective sampling for lightweight data-race detection.
+\newblock In {\em ACM Sigplan Notices}, volume~44, pages 134--143. ACM, 2009.
+
 \bibitem{musuvathi2002cmc}
 M.~Musuvathi, D.~Y. Park, A.~Chou, D.~R. Engler, and D.~L. Dill.
 \newblock {CMC}: A pragmatic approach to model checking real code.
@@ -1684,6 +1735,12 @@ G.~F. Riley and T.~R. Henderson.
 \newblock The ns-3 network simulator.
 \newblock In {\em Modeling and Tools for Network Simulation}, pages 15--34.
   Springer, 2010.
+
+\bibitem{sampson2014expressing}
+A.~Sampson, P.~Panchekha, T.~Mytkowicz, K.~S. McKinley, D.~Grossman, and
+  L.~Ceze.
+\newblock Expressing and verifying probabilistic assertions.
+\newblock In {\em ACM SIGPLAN Notices}, volume~49, pages 112--122. ACM, 2014.
 
 \bibitem{omnipeek}
 {Savvius Inc.}

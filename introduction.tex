@@ -48,7 +48,7 @@ validated, we describe a systematic transformation that adds non-deterministic
 transitions to incorporate uncertainty introduced by the sniffer. This
 augmented validation state machine implicitly defines a set of
 mutated traces, each satisfying the original state machine with a specific
-likelihood. If the set is empty, the implementation definitely violates the
+likelihood. If the set of mutated traces is empty, the implementation definitely violates the
 protocol. Searching over all the mutated traces is NP-complete, but the approach
 can be made practical by applying protocol-oblivious heuristics that limit the
 search to likely mutated traces.

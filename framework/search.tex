@@ -94,7 +94,8 @@ transitions (line~\ref{alg:search:order}).
 This ensures the first found mutation trace will have the most number of Type-0
 transitions among all possible mutation traces.
 Intuitively, this means the search algorithm tries to utilize the sniffer's
-observation as much as possible before being forced to make assumptions.
+observation as much as possible before considering the packet loss by the
+sniffer or DUT.
 
 
 Each of the extend functions either returns the mutation trace $Tr'$, or
