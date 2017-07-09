@@ -1,0 +1,42 @@
+First, we would like to thank all reviewers for their insightful comments and
+suggestions. Besides fixing typos and minor cosmetic issues, we also tried our
+best to address the comments. Responses to each individual reviewers are listed
+below.
+
+To reviewer 1:
+
+With respect to the edit distance, that's precisely the idea behind augmented
+transitions. Type-1 transitions *inserts* packets to the sniffer trace while
+Type-2 transitions *removes* packets from the sniffer trace. The number of
+augmented transitions (Type-1 and Type-2) represents the "distance" between the
+mutation trace and the original sniffer trace. The gist of the NumMissing
+heuristic we proposed is exactly to limit the "distance" (hence edits) to the
+sniffer trace.  In other words, the "distance" between the mutation trace and
+sniffer trace represents the confidence of protocol correctness.
+
+To reviewer 2:
+
+With respect to the verification coverage future work, the current proposal
+provides ways to analyze sniffer traces that are already being collected. While
+this is useful in revisiting existing traces which are mostly likely only spot
+checked, the verification is still limited to a static sets of sniffer trace
+which may only cover the "normal" path of a protocol excitation. Consider the
+case study of the game controller protocol, the rate control related violations
+were only detected in a tiny fraction of the traces since the violation requires
+non-trivial packet loss patterns to manifest itself. The idea behind our
+verification coverage proposal is to proactively control the process of
+experiment set up and sniffer trace collection to increase the chance of each
+protocol state being visited, hence increasing the  probability of violation
+detection.
+
+To reviewer 3:
+
+With respect to the fault model, in this paper we only consider full packet
+loss, which reflects most practical sniffer's behavior. In most wireless
+communications protocols, per-packet checksum is used and a packet that fails
+the checksum will be dropped by the network driver.
+
+With respect to the detailed NS-3 experiment setup, we added a paragraph in
+Section 5.1.1 to explain the packet loss model we used in the experiments.
+Basically, we added a new propagation loss component to NS-3 so that we can
+control per-packet losses between each individual pair of devices.
