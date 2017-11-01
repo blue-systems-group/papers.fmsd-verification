@@ -5,16 +5,24 @@
 under test (both DUT and endpoint), the sniffer only captures a subset of the
 all the packets (events).  This is similar to the event sampling problem in
 runtime
-verification~\cite{bonakdarpour2011sampling,hauswirth2004low,arnold2008qvm,fei2006artemis,basin2012monitoring}.
-Stoller \textit{et al}~\cite{stoller2011runtime} used HMM-based state estimation
-techniques to calculate the confidence that the temporal property is satisfied
-in the presence of gaps in observation.
+verification~\cite{bonakdarpour2011sampling,hauswirth2004low,arnold2008qvm,fei2006artemis,basin2012monitoring,sistla2011runtime}.
+In particular, Stoller \textit{et al}~\cite{stoller2011runtime} used HMM-based
+state estimation techniques to calculate the confidence that the temporal
+property is satisfied in the presence of gaps in observation. HMM-based
+approaches proposed in~\cite{stoller2011runtime} suffer from overhead of both
+running time and memory consumption. Optimizations 
+such as approximate precomputed tables~\cite{bartocci2012adaptive} and particle
+filtering~\cite{kalajdzic2013runtime} were later proposed.
 
-While it seems possible to adapt the
-method in~\cite{stoller2011runtime} to our problem, we note several advantages
-of our approach. First, the
-automatically augmented state machine precisely encodes the protocol
-specification and the uncertainty. This is intuitive to design and natural for
+In our problem, there is not only gaps in the observation (packets missed by the
+sniffer), but also uncertainty regarding observed events, which lies in whether
+a packet in the sniffer trace was received by its destination device. This
+unique challenge makes it infeasible to directly apply the HMM-based approaches
+proposed in~\cite{stoller2011runtime}.
+Besides, there are several advantages of our proposed augmented transition
+approach. First, the automatically augmented state machine precisely encodes the
+protocol specification and the uncertainty. This is intuitive to design and
+natural for
 reporting the evidence for a trace being successful. We do not require a user
 to specify the number of states of the underlying HMM, or accurately provide
 underlying probabilities. Second, we use timed automata to monitor the timing
@@ -22,6 +30,9 @@ constraints which are common in wireless protocols. It may be non-trivial to
 encode such timing information in HMM. Finally, we can exploit domain knowledge
 to devise effective pruning heuristics to rule out unlikely sequences during the
 exhaustive search. 
+
+\textbf{Edit Distance.} The closet work to ours is the Edit distance based approach
+to monitor STL properties of real time systems~\cite{jakvsic2016quantitative}.
 
 \textbf{Network Protocol Validation.} Lee \textit{et al}~\cite{lee1997passive}
 studied the problem of passive network testing of network management. The system
