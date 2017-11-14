@@ -14,7 +14,7 @@ running time and memory consumption. Optimizations
 such as approximate precomputed tables~\cite{bartocci2012adaptive} and particle
 filtering~\cite{kalajdzic2013runtime} were later proposed.
 
-In our problem, there is not only gaps in the observation (packets missed by the
+In our problem, there are not only gaps in the observation (packets missed by the
 sniffer), but also uncertainty regarding observed events, which lies in whether
 a packet in the sniffer trace was received by its destination device. This
 unique challenge makes it infeasible to directly apply the HMM-based approaches
@@ -31,8 +31,24 @@ encode such timing information in HMM. Finally, we can exploit domain knowledge
 to devise effective pruning heuristics to rule out unlikely sequences during the
 exhaustive search. 
 
-\textbf{Edit Distance.} The closet work to ours is the Edit distance based approach
-to monitor STL properties of real time systems~\cite{jakvsic2016quantitative}.
+\textbf{Edit Distance.} The closet work to ours
+is~\cite{jakvsic2016quantitative}, which uses the weighted edit distance to
+measure the robustness between digitized Cyber-Physical System (CPS) signals and
+STL specifications. The automaton of verifying STL properties is first
+translated into weighted edit automaton, which explicitly handles substitution,
+insertion and deletion by augmenting the original automaton with transitions and
+associating to them the appropriate weight function. An observed signal sequence
+is then input into the weighted edit automaton to compute the weighted edit
+distance between the observation and the specification.
+
+We share the same spirit with~\cite{jakvsic2016quantitative} in that we also
+explicitly handle the sniffer trace uncertainty using the augmented transitions.
+However, there is no need for substitution in our application scenario, as the
+sniffer can only either receive or miss a packet, but can not mis-interpret
+packets. In addition, ~\cite{jakvsic2016quantitative} only considers real value
+observations, and relies on this restriction to define the edit distance for
+insertion transitions. The approach can not be directly applied in our case
+since we need to deal with compound observations (packets).
 
 \textbf{Network Protocol Validation.} Lee \textit{et al}~\cite{lee1997passive}
 studied the problem of passive network testing of network management. The system
