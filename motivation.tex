@@ -42,10 +42,12 @@ DUT limitations we have described earlier, this complete log is not
 available. As a result, we seek to validate the DUT implementation using
 sniffers.
 
-There are two fundamental properties in wireless communication that bring uncertainty to
-sniffer's observation: packet loss and physical diversity. The sniffer could
-either miss packets sent from or to the DUT due to packet loss, or overhear packets
-that are sent to but missed by the DUT due to physical diversity.
+There are two fundamental properties in wireless communication that bring
+uncertainty to sniffer's observation: packet loss and physical diversity. The
+sniffer could either miss packets sent from or to the DUT due to packet loss, or
+overhear packets that are sent to but missed by the DUT due to physical
+diversity. Note that packet alternation needs not be considered due to packet
+level checksum mechanisms.
 
 \begin{figure}[t!]
   \centering
