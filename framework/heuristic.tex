@@ -66,10 +66,10 @@ k_n)$.
 This heuristic states that the search should only
 backtrack at most $k$ steps when the search gets stuck using only $E$.
 The motivation is that many protocols operate as a sequence of independent
-transactions, and the uncertainty of previous transactions often do not affect
+transactions, and the uncertainty of previous transactions often does not affect
 the next transaction.
 For instance, in 802.11 packet transmission protocol, each packet exchange,
-include the original, retransmission and acknowledgment packets, constitute a
+include the original, retransmission and acknowledgment packets, constitutes a
 transaction.
 And the retransmission status of previous packets has no effect on the packets
 with subsequent sequence numbers, hence need not be explored when resolving the
